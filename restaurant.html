@@ -18,13 +18,13 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav role="navigation">
       <h1>
         <a href="/">Restaurant Reviews</a>
       </h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
+    <ul id="breadcrumb" role="breadcrumb">
       <li>
         <a href="/">Home</a>
       </li>
@@ -37,7 +37,7 @@
   <!-- Beginning main -->
   <main id="maincontent">
     <!-- Beginning map -->
-    <section id="map-container">
+    <section id="map-container" role="application">
       <div id="map"></div>
     </section>
     <!-- End map -->
@@ -79,7 +79,7 @@
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQqPgB998HGT5dZKKAQC1eN9shPK7gqi8&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
-
+  <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
 </body>
 
 </html>

@@ -11,7 +11,7 @@
 
 <body>
   <header>
-    <nav>
+    <nav role="navigation">
       <h1>
         <a href="/">Restaurant Reviews</a>
       </h1>
@@ -19,7 +19,7 @@
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
+    <section id="map-container" role="application">
       <div id="map"></div>
     </section>
     <section>
@@ -38,7 +38,8 @@
 
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQqPgB998HGT5dZKKAQC1eN9shPK7gqi8&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQqPgB998HGT5dZKKAQC1eN9shPK7gqi8&libraries=places&callback=initMap" ></script>
+  <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
 
 
   <footer id="footer">
