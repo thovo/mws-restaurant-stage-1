@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 let restaurant;
-let map;
+var map;
 
 /**
  * Initialize Google map, called from HTML.
