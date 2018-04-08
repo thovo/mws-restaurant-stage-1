@@ -62,6 +62,19 @@ if (workbox) {
             cacheName: 'restaurant-pages-cache'
         })
     );
+
+    // Cache json
+    workbox.routing.registerRoute(
+        /.*\.(?:json)/,
+        workbox.strategies.cacheFirst({
+            cacheName: 'json-cache',
+            plugins: [
+                new workbox.expiration.Plugin({
+                    maxAgeSeconds: 7 * 24 * 60 * 60,
+                })
+            ],
+        })
+    );
 } else {
     console.log(`Boo! Workbox didn't load 😬`);
 }

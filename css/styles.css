@@ -129,7 +129,7 @@ nav h1 a {
     padding: 0.625rem 0;
   }
 }
-.filter-options h2 {
+.filter-options .filter-results {
   color: white;
   font-size: 1rem;
   font-weight: normal;
@@ -177,7 +177,6 @@ nav h1 a {
   display: block;
   margin: 0;
   max-width: 100%;
-  min-height: 248px;
   min-width: 100%;
 }
 h2.restaurant-name {
