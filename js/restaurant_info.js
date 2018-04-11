@@ -58,6 +58,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
+  const imageAlt = `Restaurant: ${restaurant.name} at ${restaurant.address} with cussine type: ${restaurant.cuisine_type}`;
   image.setAttribute('alt', restaurant.name);
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 

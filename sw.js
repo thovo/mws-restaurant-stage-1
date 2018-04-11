@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.0.0/workbox-sw.js');
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);
@@ -18,7 +19,7 @@ if (workbox) {
                     maxEntries: 30,
                 }),
             ],
-        }),
+        })
     );
 
     // Cache js, css files
@@ -26,7 +27,7 @@ if (workbox) {
         /\.(?:js|css)$/,
         workbox.strategies.staleWhileRevalidate({
             cacheName: 'static-resources-cache',
-        }),
+        })
     );
 
     // Cache image files
@@ -52,7 +53,7 @@ if (workbox) {
         /.*(?:googleapis)\.com.*$/,
         workbox.strategies.staleWhileRevalidate({
             cacheName: 'googleapis-cache',
-        }),
+        })
     );
 
     // Cache restaurant pages
