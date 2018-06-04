@@ -7,6 +7,7 @@ gulp.task('default', () =>
     gulp.src('img/*')
         .pipe(imageresize({
             width: 300,
+            height: 300,
             crop: true,
             upscale : false
         }))
