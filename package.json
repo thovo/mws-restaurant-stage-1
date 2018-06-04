@@ -18,8 +18,14 @@
   },
   "homepage": "https://github.com/thovo/mws-restaurant-stage-1#readme",
   "devDependencies": {
+    "gulp-image-resize": "^0.13.0",
+    "gulp-imagemin": "^4.1.0",
     "sw-precache": "^5.2.1",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "idb": "^2.1.2"
   }
 }
