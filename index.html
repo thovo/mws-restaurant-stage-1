@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=10">
   <meta name="description" content="Restaurant reviews will give you an insight into where to eat tonight?">
-  <meta name="theme-color" content="#2980b9"/>
+  <meta name="theme-color" content="#2980b9" />
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <title>Restaurant Reviews</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="/manifest.json">
 </head>
 
@@ -30,9 +31,11 @@
     <section>
       <div class="filter-options">
         <h3 class="filter-results">Filter Results</h3>
+        <label for="neighborhoods" class="src-only">Neighborhoods</label>
         <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
+        <label for="cuisines" class="src-only">Cuisines</label>
         <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
@@ -43,7 +46,7 @@
 
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap" ></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
   <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
   <script src="./node_modules/idb/lib/idb.js"></script>
 
