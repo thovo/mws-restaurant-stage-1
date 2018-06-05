@@ -48,7 +48,7 @@ article, aside, canvas, details, figcapxion, figure, footer, header, hgroup, men
   padding-bottom: 20px;
 }
 #footer {
-  background-color: #444;
+  background-color: #252831;
   color: white;
   font-size: 1rem;
   letter-spacing: 1px;
@@ -59,7 +59,7 @@ article, aside, canvas, details, figcapxion, figure, footer, header, hgroup, men
 
 #footer a {
   color: white;
-  border-bottom: 2px solid #c0392b;
+  /* border-bottom: 2px solid #c0392b; */
 }
 /* ====================== Navigation ====================== */
 nav {

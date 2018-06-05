@@ -5,16 +5,14 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=10">
-  <meta name="theme-color" content="#2980b9"/>
+  <meta name="theme-color" content="#2980b9" />
   <meta name="description" content="Restaurant reviews will give you an insight into where to eat tonight?">
   <title>Restaurant Info</title>
-  <!-- Normalize.css for better cross-browser consistency -->
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" as="font">
   <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <link rel="preload" rel="stylesheet" href="css/build/bundle.css" type="text/css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="/manifest.json">
 </head>
 
@@ -42,11 +40,6 @@
 
   <!-- Beginning main -->
   <main id="maincontent">
-    <!-- Beginning map -->
-    <section id="map-container" role="application">
-      <div id="map"></div>
-    </section>
-    <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
@@ -65,6 +58,11 @@
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
+    <!-- Beginning map -->
+    <section id="map-container" role="application">
+      <div id="map"></div>
+    </section>
+    <!-- End map -->
   </main>
   <!-- End main -->
 
@@ -72,7 +70,7 @@
   <footer id="footer">
     Copyright (c) 2017
     <a href="/">
-      <strong>Restaurant Reviews</strong>
+      Restaurant Reviews
     </a> All Rights Reserved.
   </footer>
   <!-- End footer -->
@@ -83,7 +81,7 @@
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
+  <script rel="preload" async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
   <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
   <script src="./node_modules/idb/lib/idb.js"></script>
