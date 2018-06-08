@@ -2,6 +2,9 @@
 /**
  * Common database helper functions.
  */
+
+import idb from 'idb';
+let dbPromise = {};
 class DBHelper {
 
   /**
@@ -23,15 +26,44 @@ class DBHelper {
       if (xhr.status === 200) { // Got a success response from server!
         const json = JSON.parse(xhr.responseText);
         const restaurants = json;
+        this.saveDataLocally(restaurants);
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+        const restaurants = this.getDataLocally();
+        callback(error, restaurants);
       }
     };
     xhr.send();
   }
 
+  // Save data locally
+  static saveDataLocally(restaurants) {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      const store = tx.objectStore('restaurants');
+      return Promise.all(restaurants.map(restaurant => store.put(restaurant)))
+        .catch(() => {
+          tx.abort();
+          throw Error('Restaurants were not added to the store');
+        });
+    });
+  }
+
+  // Get data locally
+  static getDataLocally() {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readonly');
+      const store = tx.objectStore('restaurants');
+      return store.getAll();
+    });
+  }
   /**
    * Fetch a restaurant by its ID.
    */
@@ -165,9 +197,22 @@ class DBHelper {
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
-      animation: google.maps.Animation.DROP}
-    );
+      animation: google.maps.Animation.DROP
+    });
     return marker;
   }
 
+  // Add indexedDB
+  static createIndexedDB() {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return idb.open('restaurants', 1, (upgradeDb) => {
+      if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+        const restaurants = upgradeDb.createObjectStore('restaurants', {
+          keyPath: 'id'
+        });
+      }
+    });
+  }
 }
