@@ -6,6 +6,8 @@ const concat = require('gulp-concat');
 const minify = require('gulp-minify');
 const cleanCss = require('gulp-clean-css');
 const inlineCss = require('gulp-inline-css');
+const babelify = require('babelify');
+const browserify = require('browserify');
 
 gulp.task('image', () => {
     gulp.src('img/*')

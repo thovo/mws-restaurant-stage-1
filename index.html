@@ -42,12 +42,11 @@
       <div id="map"></div>
     </section>
   </main>
-
+  <script src="./node_modules/idb/lib/idb.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script rel="preload" async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
   <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
-  <script src="./node_modules/idb/lib/idb.js"></script>
   <script>
 /*
  loadJS: load a JS file asynchronously. [c]2014 @scottjehl, Filament Group, Inc. (Based on http://goo.gl/REQGQ by Paul Irish). Licensed MIT */

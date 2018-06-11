@@ -3,8 +3,7 @@
  * Common database helper functions.
  */
 
-import idb from 'idb';
-let dbPromise = {};
+let dbPromise;
 class DBHelper {
 
   /**
@@ -16,25 +15,49 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
+  static openDatabase() {
+    return idb.open('restaurants', 1, (upgradeDb) => {
+      switch (upgradeDb.oldVersion) {
+        case 0:
+        case 1:
+          const restaurantStore = upgradeDb.createObjectStore('restaurants', {
+            keyPath: 'id'
+          });
+          restaurantStore.createIndex('photographs', 'photograph');
+      }
+    });
+  }
+
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json;
-        this.saveDataLocally(restaurants);
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        const restaurants = this.getDataLocally();
-        callback(error, restaurants);
-      }
-    };
-    xhr.send();
+    dbPromise = DBHelper.openDatabase();
+
+    try {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', DBHelper.DATABASE_URL);
+      xhr.onload = () => {
+        if (xhr.status === 200) { // Got a success response from server!
+          const json = JSON.parse(xhr.responseText);
+          const restaurants = json;
+          this.saveDataLocally(restaurants);
+          callback(null, restaurants);
+        } else { // Oops!. Got an error from server.
+          const error = (`Request failed. Returned status of ${xhr.status}`);
+          const restaurants = this.getDataLocally();
+          console.log(restaurants);
+          callback(null, restaurants);
+        }
+      };
+      xhr.send();
+    } catch (error) {
+      console.log(error);
+      const restaurants = this.getDataLocally();
+      console.log(restaurants);
+      callback(null, restaurants);
+    }
+
   }
 
   // Save data locally
@@ -42,8 +65,8 @@ class DBHelper {
     if (!('indexedDB' in window)) {
       return null;
     }
-    return dbPromise.then(db => {
-      const tx = db.transaction('restaurants', 'readwrite');
+    return dbPromise.then(idb => {
+      const tx = idb.transaction('restaurants', 'readwrite');
       const store = tx.objectStore('restaurants');
       return Promise.all(restaurants.map(restaurant => store.put(restaurant)))
         .catch(() => {
@@ -58,8 +81,8 @@ class DBHelper {
     if (!('indexedDB' in window)) {
       return null;
     }
-    return dbPromise.then(db => {
-      const tx = db.transaction('restaurants', 'readonly');
+    return dbPromise.then(idb => {
+      const tx = idb.transaction('restaurants', 'readonly');
       const store = tx.objectStore('restaurants');
       return store.getAll();
     });
@@ -79,7 +102,14 @@ class DBHelper {
         callback(null, restaurant);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+        const restaurants = this.getDataLocally();
+        const restaurant = restaurants.find(r => r.id == id);
+        if (restaurant) {
+          console.log(restaurant);
+          callback(null, restaurant);
+        } else { // Restaurant does not exist in the database
+          callback('Restaurant does not exist', null);
+        }
       }
     };
     xhr.send();
