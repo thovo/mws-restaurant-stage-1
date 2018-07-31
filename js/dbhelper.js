@@ -35,27 +35,51 @@ class DBHelper {
     dbPromise = DBHelper.openDatabase();
 
     try {
-      let xhr = new XMLHttpRequest();
-      xhr.open('GET', DBHelper.DATABASE_URL);
-      xhr.onload = () => {
-        if (xhr.status === 200) { // Got a success response from server!
-          const json = JSON.parse(xhr.responseText);
+      fetch(DBHelper.DATABASE_URL).then(response => {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            return response.json();
+          } else {
+            throw new TypeError("Oops, we haven't got JSON!");
+          }
+        })
+        .then(json => {
+          console.log("Get data from server");
           const restaurants = json;
           this.saveDataLocally(restaurants);
           callback(null, restaurants);
-        } else { // Oops!. Got an error from server.
-          const error = (`Request failed. Returned status of ${xhr.status}`);
-          const restaurants = this.getDataLocally();
-          console.log(restaurants);
-          callback(null, restaurants);
-        }
-      };
-      xhr.send();
+        })
+        .catch(error => {
+          console.log("Get local data");
+          this.getDataLocally().then(data => {
+            const restaurants = data;
+            console.log(restaurants);
+            callback(null, restaurants);
+          });
+        });
+      // let xhr = new XMLHttpRequest();
+      // xhr.open('GET', DBHelper.DATABASE_URL);
+      // xhr.onload = () => {
+      //   if (xhr.status === 200) { // Got a success response from server!
+      //     const json = JSON.parse(xhr.responseText);
+      //     const restaurants = json;
+      //     this.saveDataLocally(restaurants);
+      //     callback(null, restaurants);
+      //   } else { // Oops!. Got an error from server.
+      //     const error = (`Request failed. Returned status of ${xhr.status}`);
+      //     const restaurants = this.getDataLocally();
+      //     console.log(restaurants);
+      //     callback(null, restaurants);
+      //   }
+      // };
+      // xhr.send();
     } catch (error) {
       console.log(error);
-      const restaurants = this.getDataLocally();
-      console.log(restaurants);
-      callback(null, restaurants);
+      this.getDataLocally().then(data => {
+        const restaurants = data;
+        console.log(restaurants);
+        callback(null, restaurants);
+      });
     }
 
   }
@@ -92,27 +116,37 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    let xhr = new XMLHttpRequest();
+    if (!dbPromise) {
+      dbPromise = DBHelper.openDatabase();
+    }
     const url = `${DBHelper.DATABASE_URL}/${id}`;
-    xhr.open('GET', url);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
+
+    fetch(url).then(response => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        } else {
+          throw new TypeError("Oops, we haven't got JSON!");
+        }
+      })
+      .then(json => {
+        console.log("Get data from server");
         const restaurant = json;
         callback(null, restaurant);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        const restaurants = this.getDataLocally();
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) {
-          console.log(restaurant);
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
-    };
-    xhr.send();
+      })
+      .catch(error => {
+        console.log("Get local data");
+        this.getDataLocally().then(data => {
+          const restaurants = data;
+          const restaurant = restaurants.find(r => r.id == id);
+          if (restaurant) {
+            console.log(restaurant);
+            callback(null, restaurant);
+          } else { // Restaurant does not exist in the database
+            callback('Restaurant does not exist', null);
+          }
+        });
+      });
   }
 
   /**

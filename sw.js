@@ -49,12 +49,12 @@ if (workbox) {
     );
 
     // Cache google map
-    workbox.routing.registerRoute(
-        /.*(?:googleapis)\.com.*$/,
-        workbox.strategies.staleWhileRevalidate({
-            cacheName: 'googleapis-cache',
-        })
-    );
+    // workbox.routing.registerRoute(
+    //     /.*(?:googleapis)\.com.*$/,
+    //     workbox.strategies.staleWhileRevalidate({
+    //         cacheName: 'googleapis-cache',
+    //     })
+    // );
 
     // Cache restaurant pages
     workbox.routing.registerRoute(
