@@ -140,6 +140,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.className = 'restaurant';
 
   const image = document.createElement('img');
   image.className = 'restaurant-img lazy';
@@ -150,6 +151,17 @@ createRestaurantHTML = (restaurant) => {
   image.height = 300;
   image.src = '';
   li.append(image);
+
+  const favorite = document.createElement('i');
+  if (restaurant.is_favorite) {
+    favorite.className = 'favorite';
+  }
+  favorite.innerHTML = '&#10084;';
+  favorite.onclick = () => {
+    favorite.classList.toggle('favorite');
+    toggleFavorite(restaurant);
+  };
+  li.append(favorite);
 
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
@@ -173,6 +185,13 @@ createRestaurantHTML = (restaurant) => {
 
   return li;
 };
+
+toggleFavorite = (restaurant) => {
+  restaurant.is_favorite = !restaurant.is_favorite;
+  restaurant.updateAt = (new Date()).getTime();
+  // We will update by sending the request to update to server
+  DBHelper.updateFavoriteRestaurant(restaurant);
+}
 
 /**
  * Add markers for current restaurants to the map.

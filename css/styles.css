@@ -409,3 +409,28 @@ img {
 img.lazy {
 	opacity: 0;
 }
+
+.restaurant {
+  position: relative;
+}
+
+.restaurant i {
+  font-size: 15px;
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  display: block;
+  width: 30px;
+  background: white;
+  height: 30px;
+  text-align: center;
+  border-radius: 50%;
+  font-family: monospace;
+  cursor: pointer;
+  font-style: normal;
+  line-height: 30px;
+}
+
+.favorite {
+  color: #c0392b;
+}

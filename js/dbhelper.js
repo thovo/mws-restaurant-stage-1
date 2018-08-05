@@ -19,11 +19,14 @@ class DBHelper {
     return idb.open('restaurants', 1, (upgradeDb) => {
       switch (upgradeDb.oldVersion) {
         case 0:
-        case 1:
-          const restaurantStore = upgradeDb.createObjectStore('restaurants', {
+          upgradeDb.createObjectStore('restaurants', {
             keyPath: 'id'
           });
-          restaurantStore.createIndex('photographs', 'photograph');
+        case 1:
+          const reviewsStore = upgradeDb.createObjectStore('reviews', {
+            keyPath: 'id'
+          });
+          reviewsStore.createIndex('restaurant', 'restaurant_id');
       }
     });
   }
@@ -57,22 +60,6 @@ class DBHelper {
             callback(null, restaurants);
           });
         });
-      // let xhr = new XMLHttpRequest();
-      // xhr.open('GET', DBHelper.DATABASE_URL);
-      // xhr.onload = () => {
-      //   if (xhr.status === 200) { // Got a success response from server!
-      //     const json = JSON.parse(xhr.responseText);
-      //     const restaurants = json;
-      //     this.saveDataLocally(restaurants);
-      //     callback(null, restaurants);
-      //   } else { // Oops!. Got an error from server.
-      //     const error = (`Request failed. Returned status of ${xhr.status}`);
-      //     const restaurants = this.getDataLocally();
-      //     console.log(restaurants);
-      //     callback(null, restaurants);
-      //   }
-      // };
-      // xhr.send();
     } catch (error) {
       console.log(error);
       this.getDataLocally().then(data => {
@@ -82,6 +69,25 @@ class DBHelper {
       });
     }
 
+  }
+
+  static updateFavoriteRestaurant(restaurant) {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    const url = `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`;
+    return fetch(url, { method: 'PUT'} )
+            .then(() => {
+              dbPromise.then(idb => {
+                const tx = idb.transaction('restaurants', 'readwrite');
+                const restaurantsStore = tx.objectStore('restaurants');
+                return Promise.all(() => restaurantsStore.put(restaurant))
+                .catch(error => {
+                  console.log(error);
+                  tx.abort();
+                });
+             });
+            })
   }
 
   // Save data locally
@@ -108,6 +114,18 @@ class DBHelper {
     return dbPromise.then(idb => {
       const tx = idb.transaction('restaurants', 'readonly');
       const store = tx.objectStore('restaurants');
+      return store.getAll();
+    });
+  }
+
+  // Get data locally
+  static getReviewsDataLocally() {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return dbPromise.then(idb => {
+      const tx = idb.transaction('restaurants', 'readonly');
+      const store = tx.objectStore('reviews');
       return store.getAll();
     });
   }
@@ -138,6 +156,44 @@ class DBHelper {
         console.log("Get local data");
         this.getDataLocally().then(data => {
           const restaurants = data;
+          const restaurant = restaurants.find(r => r.id == id);
+          if (restaurant) {
+            console.log(restaurant);
+            callback(null, restaurant);
+          } else { // Restaurant does not exist in the database
+            callback('Restaurant does not exist', null);
+          }
+        });
+      });
+  }
+
+  /**
+   * Fetch a restaurant reviews by its ID.
+   */
+  static fetchReviewsById(id, callback) {
+    // fetch all restaurants with proper error handling.
+    if (!dbPromise) {
+      dbPromise = DBHelper.openDatabase();
+    }
+    const url = `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`;
+
+    fetch(url).then(response => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        } else {
+          throw new TypeError("Oops, we haven't got JSON!");
+        }
+      })
+      .then(json => {
+        console.log("Get data from server");
+        const reviews = json;
+        callback(null, reviews);
+      })
+      .catch(error => {
+        console.log("Get local data");
+        this.getReviewsDataLocally().then(data => {
+          const reviews = data;
           const restaurant = restaurants.find(r => r.id == id);
           if (restaurant) {
             console.log(restaurant);
