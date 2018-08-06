@@ -4,6 +4,8 @@
  */
 
 let dbPromise;
+const port = 1337;
+const serverLink = `http://localhost:${port}`;
 class DBHelper {
 
   /**
@@ -81,13 +83,12 @@ class DBHelper {
               dbPromise.then(idb => {
                 const tx = idb.transaction('restaurants', 'readwrite');
                 const restaurantsStore = tx.objectStore('restaurants');
-                return Promise.all(() => restaurantsStore.put(restaurant))
-                .catch(error => {
-                  console.log(error);
-                  tx.abort();
+                restaurantsStore.get(restaurant.id).then(r => {
+                  r.is_favorite = restaurant.is_favorite;
+                  restaurantsStore.put(r);
                 });
              });
-            })
+            });
   }
 
   // Save data locally
@@ -129,6 +130,13 @@ class DBHelper {
       return store.getAll();
     });
   }
+
+  static handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
   /**
    * Fetch a restaurant by its ID.
    */
@@ -139,20 +147,15 @@ class DBHelper {
     }
     const url = `${DBHelper.DATABASE_URL}/${id}`;
 
-    fetch(url).then(response => {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return response.json();
-        } else {
-          throw new TypeError("Oops, we haven't got JSON!");
-        }
-      })
-      .then(json => {
+    fetch(url)
+      .then(DBHelper.handleErrors)
+      .then(response => {
         console.log("Get data from server");
-        const restaurant = json;
+        const restaurant = response.json();
         callback(null, restaurant);
       })
       .catch(error => {
+        console.log(error);
         console.log("Get local data");
         this.getDataLocally().then(data => {
           const restaurants = data;
@@ -170,27 +173,23 @@ class DBHelper {
   /**
    * Fetch a restaurant reviews by its ID.
    */
-  static fetchReviewsById(id, callback) {
+  static getReviewsById(id, callback) {
     // fetch all restaurants with proper error handling.
     if (!dbPromise) {
       dbPromise = DBHelper.openDatabase();
     }
-    const url = `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`;
+    const url = `${serverLink}/reviews/?restaurant_id=${id}`;
 
-    fetch(url).then(response => {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return response.json();
-        } else {
-          throw new TypeError("Oops, we haven't got JSON!");
-        }
-      })
-      .then(json => {
+    fetch(url)
+      .then(DBHelper.handleErrors)
+      .then(response => {
         console.log("Get data from server");
-        const reviews = json;
+        console.log(response);
+        const reviews = response.json();
         callback(null, reviews);
       })
       .catch(error => {
+        console.log(error);
         console.log("Get local data");
         this.getReviewsDataLocally().then(data => {
           const reviews = data;
