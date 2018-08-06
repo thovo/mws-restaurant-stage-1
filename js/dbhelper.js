@@ -88,7 +88,7 @@ class DBHelper {
                   restaurantsStore.put(r);
                 });
              });
-            });
+            })
   }
 
   // Save data locally
@@ -130,13 +130,6 @@ class DBHelper {
       return store.getAll();
     });
   }
-
-  static handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
   /**
    * Fetch a restaurant by its ID.
    */
@@ -147,11 +140,17 @@ class DBHelper {
     }
     const url = `${DBHelper.DATABASE_URL}/${id}`;
 
-    fetch(url)
-      .then(DBHelper.handleErrors)
-      .then(response => {
+    fetch(url).then(response => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        } else {
+          throw new TypeError("Oops, we haven't got JSON!");
+        }
+      })
+      .then(json => {
         console.log("Get data from server");
-        const restaurant = response.json();
+        const restaurant = json;
         callback(null, restaurant);
       })
       .catch(error => {
@@ -181,7 +180,6 @@ class DBHelper {
     const url = `${serverLink}/reviews/?restaurant_id=${id}`;
 
     fetch(url)
-      .then(DBHelper.handleErrors)
       .then(response => {
         console.log("Get data from server");
         console.log(response);
