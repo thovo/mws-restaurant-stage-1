@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 let restaurant;
+let offlineReviews = [];
 var map;
 
 /**
@@ -98,7 +99,8 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = () => {
-  DBHelper.getReviewsById(self.restaurant.id).then((error, reviews) => {
+  DBHelper.getReviewsById(self.restaurant.id, (error, reviews) => {
+    console.log(error);
     const container = document.getElementById('reviews-container');
     const title = document.createElement('h3');
     title.innerHTML = 'Reviews';
@@ -129,7 +131,11 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  const temp = new Date(review.createdAt);
+  const day = temp.getDate();
+  const month = temp.getMonth() + 1;
+  const year = temp.getFullYear();
+  date.innerHTML = `${day}/${month}/${year}`;
   date.className = 'review-date';
   li.appendChild(date);
 
@@ -171,3 +177,48 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
+
+const form = document.forms.namedItem("review-form");
+form.addEventListener('submit', (ev) => {
+  const formData = new FormData(ev.target);
+  const name = formData.get('name');
+  const rating = formData.get('rating');
+  const comments =  formData.get('comments');
+  const restaurant_id = self.restaurant.id;
+  const review = {
+    restaurant_id,
+    name,
+    rating,
+    comments
+  };
+  if (navigator.onLine) {
+    sendReviewOnline(review);
+  }
+  ev.preventDefault();
+}, false);
+
+sendReviewOnline = (review) => {
+  DBHelper.sendReview(review,  (error, review) => {
+    const ul = document.getElementById('reviews-list');
+    ul.appendChild(createReviewHTML(review));
+    document.getElementById('review-form').reset();
+    DBHelper.saveReviewLocally(review);
+  });
+};
+
+saveReviewOffline = (review) => {
+  offlineReviews = JSON.parse(localStorage.getItem('offlineReviews'));
+  offlineReviews.push(review);
+  localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
+};
+
+window.addEventListener('online', () => {
+  offlineReviews = JSON.parse(localStorage.getItem('offlineReviews'));
+  if (offlineReviews.length > 0) {
+    offlineReviews.forEach(review => {
+      sendReviewOnline(review);
+    });
+  }
+  offlineReviews = [];
+  localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
+});

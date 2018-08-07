@@ -18,7 +18,7 @@ class DBHelper {
   }
 
   static openDatabase() {
-    return idb.open('restaurants', 1, (upgradeDb) => {
+    return idb.open('restaurants', 2, (upgradeDb) => {
       switch (upgradeDb.oldVersion) {
         case 0:
           upgradeDb.createObjectStore('restaurants', {
@@ -78,17 +78,19 @@ class DBHelper {
       return null;
     }
     const url = `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`;
-    return fetch(url, { method: 'PUT'} )
-            .then(() => {
-              dbPromise.then(idb => {
-                const tx = idb.transaction('restaurants', 'readwrite');
-                const restaurantsStore = tx.objectStore('restaurants');
-                restaurantsStore.get(restaurant.id).then(r => {
-                  r.is_favorite = restaurant.is_favorite;
-                  restaurantsStore.put(r);
-                });
-             });
-            })
+    return fetch(url, {
+        method: 'PUT'
+      })
+      .then(() => {
+        dbPromise.then(idb => {
+          const tx = idb.transaction('restaurants', 'readwrite');
+          const restaurantsStore = tx.objectStore('restaurants');
+          restaurantsStore.get(restaurant.id).then(r => {
+            r.is_favorite = restaurant.is_favorite;
+            restaurantsStore.put(r);
+          });
+        });
+      })
   }
 
   // Save data locally
@@ -104,6 +106,33 @@ class DBHelper {
           tx.abort();
           throw Error('Restaurants were not added to the store');
         });
+    });
+  }
+
+  static saveReviewsLocally(reviews) {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return dbPromise.then(idb => {
+      const tx = idb.transaction('restaurants', 'readwrite');
+      const store = tx.objectStore('reviews');
+      return Promise.all(reviews.map(review => store.put(review)))
+        .catch(() => {
+          tx.abort();
+          throw Error('Reviews were not added to the store');
+        });
+    });
+  }
+
+  static saveReviewLocally(review) {
+    if (!('indexedDB' in window)) {
+      return null;
+    }
+    return dbPromise.then(idb => {
+      const tx = idb.transaction('restaurants', 'readwrite');
+      const store = tx.objectStore('reviews');
+      store.put(review);
+      return tx.complete;
     });
   }
 
@@ -181,24 +210,49 @@ class DBHelper {
 
     fetch(url)
       .then(response => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json();
+        } else {
+          throw new TypeError("Oops, we haven't got JSON!");
+        }
+      })
+      .then(json => {
         console.log("Get data from server");
-        console.log(response);
-        const reviews = response.json();
+        console.log(json);
+        const reviews = json;
+        DBHelper.saveReviewsLocally(reviews);
         callback(null, reviews);
       })
       .catch(error => {
         console.log(error);
-        console.log("Get local data");
-        this.getReviewsDataLocally().then(data => {
-          const reviews = data;
-          const restaurant = restaurants.find(r => r.id == id);
-          if (restaurant) {
-            console.log(restaurant);
-            callback(null, restaurant);
-          } else { // Restaurant does not exist in the database
-            callback('Restaurant does not exist', null);
-          }
-        });
+        // console.log("Get local data");
+        // this.getReviewsDataLocally().then(data => {
+        //   const reviews = data;
+        //   const restaurant = restaurants.find(r => r.id == id);
+        //   if (restaurant) {
+        //     console.log(restaurant);
+        //     callback(null, restaurant);
+        //   } else { // Restaurant does not exist in the database
+        //     callback('Restaurant does not exist', null);
+        //   }
+        // });
+      });
+  }
+
+  static sendReview(review, callback) {
+    const url = `${serverLink}/reviews`;
+    fetch(url, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(review)
+      }).then(res => res.json())
+      .then(res => {
+        console.log(res);
+        callback(null, res);
       });
   }
 
