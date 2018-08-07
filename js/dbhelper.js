@@ -28,6 +28,7 @@ class DBHelper {
           const reviewsStore = upgradeDb.createObjectStore('reviews', {
             keyPath: 'id'
           });
+          console.log(reviewsStore);
           reviewsStore.createIndex('restaurant', 'restaurant_id');
       }
     });
@@ -114,7 +115,7 @@ class DBHelper {
       return null;
     }
     return dbPromise.then(idb => {
-      const tx = idb.transaction('restaurants', 'readwrite');
+      const tx = idb.transaction('reviews', 'readwrite');
       const store = tx.objectStore('reviews');
       return Promise.all(reviews.map(review => store.put(review)))
         .catch(() => {
@@ -129,7 +130,7 @@ class DBHelper {
       return null;
     }
     return dbPromise.then(idb => {
-      const tx = idb.transaction('restaurants', 'readwrite');
+      const tx = idb.transaction('reviews', 'readwrite');
       const store = tx.objectStore('reviews');
       store.put(review);
       return tx.complete;
@@ -154,7 +155,7 @@ class DBHelper {
       return null;
     }
     return dbPromise.then(idb => {
-      const tx = idb.transaction('restaurants', 'readonly');
+      const tx = idb.transaction('reviews', 'readonly');
       const store = tx.objectStore('reviews');
       return store.getAll();
     });

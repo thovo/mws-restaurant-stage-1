@@ -538,7 +538,9 @@ img.lazy {
   font-weight: bold;
 }
 
-.form .form-group input, .form .form-group select, .form .form-group textarea {
+.form .form-group input,
+.form .form-group select,
+.form .form-group textarea {
   border: 2px solid #2c3e50;
   border-radius: 5px;
   padding: 10px;
@@ -568,4 +570,86 @@ img.lazy {
   max-width: 70px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.status {
+  visibility: hidden;
+    position: fixed;
+    bottom: 20px;
+    padding: 15px;
+    left: 45%;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.status .bubble {
+  border: none;
+  color: #ecf0f1;
+  padding: 10px;
+  text-align: center;
+  max-width: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.status .bubble.offline.show {
+  visibility: visible;
+  background-color: #c0392b;
+}
+
+.status .bubble.online.show {
+  visibility: visible;
+  background-color: #2ecc71;
+}
+
+.status.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
 }

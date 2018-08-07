@@ -194,6 +194,9 @@ form.addEventListener('submit', (ev) => {
   if (navigator.onLine) {
     sendReviewOnline(review);
   }
+  else {
+    saveReviewOffline(review);
+  }
   ev.preventDefault();
 }, false);
 
@@ -201,18 +204,19 @@ sendReviewOnline = (review) => {
   DBHelper.sendReview(review,  (error, review) => {
     const ul = document.getElementById('reviews-list');
     ul.appendChild(createReviewHTML(review));
-    document.getElementById('review-form').reset();
+    document.getElementById('form').reset();
     DBHelper.saveReviewLocally(review);
   });
 };
 
 saveReviewOffline = (review) => {
-  offlineReviews = JSON.parse(localStorage.getItem('offlineReviews'));
+  offlineReviews = JSON.parse(localStorage.getItem('offlineReviews')) ? JSON.parse(localStorage.getItem('offlineReviews')) : [];
   offlineReviews.push(review);
   localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
 };
 
 window.addEventListener('online', () => {
+  setStatus('online');
   offlineReviews = JSON.parse(localStorage.getItem('offlineReviews'));
   if (offlineReviews.length > 0) {
     offlineReviews.forEach(review => {
@@ -222,3 +226,25 @@ window.addEventListener('online', () => {
   offlineReviews = [];
   localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
 });
+
+window.addEventListener('offline', () => setStatus('offline'));
+
+setStatus = (status) => {
+  const statusElement = document.getElementById('status');
+  statusElement.classList.toggle('show');
+  setTimeout(() => statusElement.classList.toggle('show'), 3000);
+  switch (status) {
+    case 'offline':
+      const offline = document.getElementById('offline');
+      offline.classList.toggle('show');
+      setTimeout(() => offline.classList.toggle('show'), 3000);
+      break;
+    case 'online':
+      const online = document.getElementById('online');
+      online.classList.toggle('show');
+      setTimeout(() => online.classList.toggle('show'), 3000);
+    break;
+    default:
+      break;
+  }
+};

@@ -59,7 +59,7 @@
 
     <section id="review-form">
       <h3>You already visited this restaurant, what do you think about it?</h3>
-      <form enctype="multipart/form-data" method="post" name="review-form" class="form">
+      <form enctype="multipart/form-data" method="post" name="review-form" class="form" id="form">
         <div class="form-group">
           <label for="name">Name</label>
           <input type="text" name="name" id="name">
@@ -87,6 +87,10 @@
     <!-- Beginning map -->
     <section id="map-container" role="application">
       <div id="map"></div>
+    </section>
+    <section class="status" id="status">
+      <div class="bubble offline" id="offline">Network down! Offline mode!</div>
+      <div class="bubble online" id="online">Network back! Online mode</div>
     </section>
     <!-- End map -->
   </main>
