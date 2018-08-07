@@ -16,7 +16,7 @@
   <header>
     <nav role="navigation">
       <span>
-        <a href="/">Restaurant Reviews</a>
+        <a href="/" class="title" aria-label="title">Restaurant Reviews</a>
       </span>
     </nav>
   </header>
@@ -25,16 +25,20 @@
     <section>
       <div class="filter-options">
         <h3 class="filter-results">Filter Results</h3>
-        <label for="neighborhoods" class="src-only">Neighborhoods</label>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <label for="neighborhoods" id="neighborhoods-label">Neighborhoods</label>
+        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" aria-labelledby="neighborhoods-label">
           <option value="all">All Neighborhoods</option>
         </select>
-        <label for="cuisines" class="src-only">Cuisines</label>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <label for="cuisines" id="cuisines-label">Cuisines</label>
+        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" aria-labelledby="cuisines-label">
           <option value="all">All Cuisines</option>
         </select>
       </div>
       <ul id="restaurants-list"></ul>
+    </section>
+    <section class="status" id="status">
+      <div class="bubble offline" id="offline">Network down! Offline mode!</div>
+      <div class="bubble online" id="online">Network back! Online mode</div>
     </section>
     <section id="map-container" role="application">
       <div id="map"></div>

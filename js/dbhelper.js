@@ -6,6 +6,8 @@
 let dbPromise;
 const port = 1337;
 const serverLink = `http://localhost:${port}`;
+let favoriteRestaurantsOffline = [];
+
 class DBHelper {
 
   /**
@@ -75,10 +77,18 @@ class DBHelper {
   }
 
   static updateFavoriteRestaurant(restaurant) {
+    if (navigator.online) {
+      DBHelper.updateFavoriteOnline(restaurant);
+    } else {
+      DBHelper.updateFavoriteOffline(restaurant);
+    }
+  }
+
+  static updateFavoriteOnline(restaurant) {
     if (!('indexedDB' in window)) {
       return null;
     }
-    const url = `http://localhost:1337/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`;
+    const url = `${serverLink}/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`;
     return fetch(url, {
         method: 'PUT'
       })
@@ -91,7 +101,14 @@ class DBHelper {
             restaurantsStore.put(r);
           });
         });
-      })
+      });
+  }
+
+  static updateFavoriteOffline(restaurant) {
+    console.log('Update offline');
+    favoriteRestaurantsOffline = JSON.parse(localStorage.getItem('favoriteRestaurantsOffline')) ? JSON.parse(localStorage.getItem('favoriteRestaurantsOffline')) : [];
+    favoriteRestaurantsOffline.push(restaurant);
+    localStorage.setItem('favoriteRestaurantsOffline', JSON.stringify(favoriteRestaurantsOffline));
   }
 
   // Save data locally
@@ -388,3 +405,35 @@ class DBHelper {
     });
   }
 }
+window.addEventListener('online', () => {
+  setStatus('online');
+  favoriteRestaurantsOffline = JSON.parse(localStorage.getItem('favoriteRestaurantsOffline'));
+  if (favoriteRestaurantsOffline.length > 0) {
+    favoriteRestaurantsOffline.forEach(restaurant => {
+      DBHelper.updateFavoriteOnline(restaurant);
+    });
+  }
+  favoriteRestaurantsOffline = [];
+  localStorage.setItem('favoriteRestaurantsOffline', JSON.stringify(favoriteRestaurantsOffline));
+});
+window.addEventListener('offline', () => setStatus('offline'));
+
+setStatus = (status) => {
+  const statusElement = document.getElementById('status');
+  statusElement.classList.toggle('show');
+  setTimeout(() => statusElement.classList.toggle('show'), 3000);
+  switch (status) {
+    case 'offline':
+      const offline = document.getElementById('offline');
+      offline.classList.toggle('show');
+      setTimeout(() => offline.classList.toggle('show'), 3000);
+      break;
+    case 'online':
+      const online = document.getElementById('online');
+      online.classList.toggle('show');
+      setTimeout(() => online.classList.toggle('show'), 3000);
+      break;
+    default:
+      break;
+  }
+};

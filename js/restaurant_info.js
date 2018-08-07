@@ -216,7 +216,6 @@ saveReviewOffline = (review) => {
 };
 
 window.addEventListener('online', () => {
-  setStatus('online');
   offlineReviews = JSON.parse(localStorage.getItem('offlineReviews'));
   if (offlineReviews.length > 0) {
     offlineReviews.forEach(review => {
@@ -227,24 +226,3 @@ window.addEventListener('online', () => {
   localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
 });
 
-window.addEventListener('offline', () => setStatus('offline'));
-
-setStatus = (status) => {
-  const statusElement = document.getElementById('status');
-  statusElement.classList.toggle('show');
-  setTimeout(() => statusElement.classList.toggle('show'), 3000);
-  switch (status) {
-    case 'offline':
-      const offline = document.getElementById('offline');
-      offline.classList.toggle('show');
-      setTimeout(() => offline.classList.toggle('show'), 3000);
-      break;
-    case 'online':
-      const online = document.getElementById('online');
-      online.classList.toggle('show');
-      setTimeout(() => online.classList.toggle('show'), 3000);
-    break;
-    default:
-      break;
-  }
-};

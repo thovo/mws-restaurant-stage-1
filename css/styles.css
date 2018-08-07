@@ -68,6 +68,10 @@ section {
   width: 100%;
 }
 
+.title {
+  color: white;
+}
+
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
@@ -197,6 +201,10 @@ nav h1 a {
   margin: 0.625rem;
   padding: 0 0.625rem;
   width: 200px;
+}
+
+.filter-options label {
+  color: white;
 }
 
 #map-container {
