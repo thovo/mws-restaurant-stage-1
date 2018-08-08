@@ -16,12 +16,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Initialize Google map, called from HTML.
  */
 initMapForRestaurant = () => {
-  self.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 16,
-    center: self.restaurant.latlng,
-    scrollwheel: false
-  });
-  DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+  if (google) {
+    self.map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 16,
+      center: self.restaurant.latlng,
+      scrollwheel: false
+    });
+    DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+  }
 };
 
 /**
@@ -193,7 +195,7 @@ form.addEventListener('submit', (ev) => {
   const formData = new FormData(ev.target);
   const name = formData.get('name');
   const rating = formData.get('rating');
-  const comments =  formData.get('comments');
+  const comments = formData.get('comments');
   const restaurant_id = self.restaurant.id;
   const review = {
     restaurant_id,
@@ -203,15 +205,14 @@ form.addEventListener('submit', (ev) => {
   };
   if (navigator.onLine) {
     sendReviewOnline(review);
-  }
-  else {
+  } else {
     saveReviewOffline(review);
   }
   ev.preventDefault();
 }, false);
 
 sendReviewOnline = (review) => {
-  DBHelper.sendReview(review,  (error, review) => {
+  DBHelper.sendReview(review, (error, review) => {
     const ul = document.getElementById('reviews-list');
     ul.appendChild(createReviewHTML(review));
     document.getElementById('form').reset();
@@ -235,4 +236,3 @@ window.addEventListener('online', () => {
   offlineReviews = [];
   localStorage.setItem('offlineReviews', JSON.stringify(offlineReviews));
 });
-

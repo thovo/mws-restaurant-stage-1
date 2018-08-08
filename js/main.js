@@ -156,7 +156,7 @@ createRestaurantHTML = (restaurant) => {
   li.append(image);
 
   const favorite = document.createElement('i');
-  if (restaurant.is_favorite) {
+  if (restaurant.is_favorite && String(restaurant.is_favorite) !== 'false') {
     favorite.className = 'favorite';
   }
   favorite.innerHTML = '&#10084;';
@@ -190,7 +190,7 @@ createRestaurantHTML = (restaurant) => {
 };
 
 toggleFavorite = (restaurant) => {
-  restaurant.is_favorite = !restaurant.is_favorite;
+  restaurant.is_favorite = (restaurant.is_favorite && String(restaurant.is_favorite) !== 'false') ? false : true;
   restaurant.updateAt = (new Date()).getTime();
   // We will update by sending the request to update to server
   DBHelper.updateFavoriteRestaurant(restaurant);
@@ -202,11 +202,13 @@ toggleFavorite = (restaurant) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url;
-    });
-    self.markers.push(marker);
+    if (google) {
+      const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+      google.maps.event.addListener(marker, 'click', () => {
+        window.location.href = marker.url;
+      });
+      self.markers.push(marker);
+    }
   });
 };
 
