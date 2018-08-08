@@ -77,7 +77,7 @@ class DBHelper {
   }
 
   static updateFavoriteRestaurant(restaurant) {
-    if (navigator.online) {
+    if (navigator.onLine) {
       DBHelper.updateFavoriteOnline(restaurant);
     } else {
       DBHelper.updateFavoriteOffline(restaurant);
@@ -244,17 +244,22 @@ class DBHelper {
       })
       .catch(error => {
         console.log(error);
-        // console.log("Get local data");
-        // this.getReviewsDataLocally().then(data => {
-        //   const reviews = data;
-        //   const restaurant = restaurants.find(r => r.id == id);
-        //   if (restaurant) {
-        //     console.log(restaurant);
-        //     callback(null, restaurant);
-        //   } else { // Restaurant does not exist in the database
-        //     callback('Restaurant does not exist', null);
-        //   }
-        // });
+        console.log("Get local data");
+        this.getReviewsDataLocally().then(data => {
+          const reviews = data;
+          const reviewsForID = [];
+          reviews.forEach(r => {
+            if (r.restaurant_id === id) {
+              reviewsForID.push(r);
+            }
+          });
+          if (reviewsForID.length > 0) {
+            console.log(reviewsForID);
+            callback(null, reviewsForID);
+          } else {
+            callback('Reviews does not exist', null);
+          }
+        });
       });
   }
 

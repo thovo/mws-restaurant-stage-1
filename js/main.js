@@ -10,6 +10,7 @@ var markers = [];
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
 });
 
 /**
@@ -70,7 +71,9 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+initMap = () => {
+  const restaurantsMap = document.getElementById('restaurants-map');
+  // restaurantsMap.classList.toggle('display-none');
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -80,7 +83,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-  updateRestaurants();
+  addMarkersToMap();
 };
 
 /**

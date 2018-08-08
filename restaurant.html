@@ -84,15 +84,16 @@
         </div>
       </form>
     </section>
-    <!-- Beginning map -->
-    <section id="map-container" role="application">
-      <div id="map"></div>
-    </section>
     <section class="status" id="status">
       <div class="bubble offline" id="offline">Network down! Offline mode!</div>
       <div class="bubble online" id="online">Network back! Online mode</div>
     </section>
-    <!-- End map -->
+    <section id="map-container" role="application">
+      <h3>Check out the map!</h3>
+      <div id="map" aria-label="Location">
+        <div id="restaurant-map" aria-label="Map" onclick="initMapForRestaurant()" class="temporary-restaurant-map"></div>
+      </div>
+    </section>
   </main>
   <!-- End main -->
 
@@ -112,7 +113,7 @@
   <!-- Main javascript file -->
   <script type="application/javascript" charset="utf-8" src="js/restaurant_info.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places"></script>
   <!-- End scripts -->
   <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
 </body>

@@ -41,14 +41,16 @@
       <div class="bubble online" id="online">Network back! Online mode</div>
     </section>
     <section id="map-container" role="application">
-      <div id="map"></div>
+      <div id="map" aria-label="Location">
+        <div onclick="initMap()" id="restaurants-map" aria-label="Restaurants Map" class="temporary"></div>
+      </div>
     </section>
   </main>
   <link rel="stylesheet" href="css/styles.css">
   <script type="application/javascript" charset="utf-8" src="js/idb.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtHOMjAwbhGn13YerOn8ma5Q3T_qs5KSM&libraries=places"></script>
   <script type="application/javascript" charset="utf-8" src="sw-register.js"></script>
   <footer id="footer">
     Copyright (c) 2017

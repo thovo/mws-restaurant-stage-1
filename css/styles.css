@@ -160,9 +160,8 @@ nav h1 a {
 /* ====================== Map ====================== */
 
 #map {
-  height: 400px;
   width: 100%;
-  background-color: #ccc;
+  min-height: 500px;
 }
 
 /* ====================== Restaurant Filtering ====================== */
@@ -209,7 +208,6 @@ nav h1 a {
 
 #map-container {
   width: 100%;
-  display: none;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -281,10 +279,10 @@ h2.restaurant-name {
 }
 
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
   height: 100%;
   width: 100%;
-  margin-top: 130px;
+  padding: 30px 40px;
+  order: 4;
 }
 
 .inside #map {
@@ -525,7 +523,8 @@ img.lazy {
 }
 
 #review-form {
-  padding: 30px 40px 80px;
+  padding: 30px 40px;
+  order: 3;
 }
 
 .form {
@@ -660,4 +659,33 @@ img.lazy {
     bottom: 0;
     opacity: 0;
   }
+}
+
+.display-none {
+  display: none;
+}
+
+.temporary {
+  display: flex;
+  width: 100%;
+  min-height: 500px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  cursor: pointer;
+}
+
+.temporary-restaurant-map {
+  display: flex;
+  width: 100%;
+  min-height: 500px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top;
+  cursor: pointer;
+  background-color: #f3f3f3;
+}
+
+#restaurants-map {
+  background-image: url('/img/maps/restaurants.webp');
 }
